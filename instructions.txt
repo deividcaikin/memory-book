@@ -1,0 +1,2 @@
+Generate photos array content based on photos folder contents:
+node generatePhotosArray.js

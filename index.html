@@ -127,6 +127,80 @@
     font-weight: 300;
     letter-spacing: 0.08em;
   }
+
+  .end-message {
+    position: absolute;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    background: linear-gradient(145deg, #5e60ce, #3f37c9);
+    border-radius: 12px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+    text-align: center;
+    padding: 30px;
+    box-sizing: border-box;
+  }
+
+  .end-message.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .end-message-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: white;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .end-message-sub {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .nav-btn {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 30px;
+    padding: 9px 22px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.25);
+    color: white;
+  }
+
+  .nav-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #skipToEndBtn {
+    margin-top: 18px;
+  }
+
+  #backToStartBtn {
+    margin-top: 24px;
+  }
 </style>
 </head>
 <body>
@@ -135,11 +209,40 @@
   <div class="cover"></div>
   <div class="page-stack"></div>
   <div class="book" id="book"></div>
+  <div class="end-message" id="endMessage">
+    <div class="end-message-title">To many more chapters together 💛</div>
+    <div class="end-message-sub">With love, always</div>
+    <div class="end-message-sub">Deivid 2026</div>
+    <button class="nav-btn" id="backToStartBtn">↩ Back to start</button>
+  </div>
 </div>
+<button class="nav-btn" id="skipToEndBtn">Skip to end ↪</button>
 
 <script>
 const photos = [
   "Photos/photo1.JPG",
+  "Photos/IMG_3400.JPG",
+  "Photos/IMG_3452.JPG",
+  "Photos/IMG_3546.JPG",
+  "Photos/IMG_3584.JPG",
+  "Photos/IMG_3679.JPG",
+  "Photos/IMG_3747.JPG",
+  "Photos/IMG_2834.jpg",
+  "Photos/IMG_3031.jpg",
+  "Photos/IMG_3092.jpg",
+  "Photos/IMG_3375.jpg",
+  "Photos/IMG_3445.jpg",
+  "Photos/IMG_3556.jpg",
+  "Photos/IMG_3636.jpg",
+  "Photos/IMG_3642.jpg",
+  "Photos/IMG_3644.jpg",
+  "Photos/IMG_3834.jpg",
+  "Photos/IMG_3837.jpg",
+  "Photos/IMG_3880.jpg",
+  "Photos/IMG_3918.jpg",
+  "Photos/IMG_3987.jpg",
+  "Photos/IMG_3999.jpg",
+  "Photos/IMG_4022.jpg",
   "Photos/IMG_0033.jpg",
   "Photos/IMG_0206.jpg",
   "Photos/IMG_0517.jpg",
@@ -162,36 +265,14 @@ const photos = [
   "Photos/IMG_2614.jpg",
   "Photos/IMG_2668.jpg",
   "Photos/IMG_2801.jpg",
-  "Photos/IMG_2834.jpg",
-  "Photos/IMG_3031.jpg",
-  "Photos/IMG_3092.jpg",
-  "Photos/IMG_3375.jpg",
-  "Photos/IMG_3400.JPG",
-  "Photos/IMG_3445.jpg",
-  "Photos/IMG_3452.JPG",
-  "Photos/IMG_3546.JPG",
-  "Photos/IMG_3556.jpg",
-  "Photos/IMG_3584.JPG",
-  "Photos/IMG_3636.jpg",
-  "Photos/IMG_3642.jpg",
-  "Photos/IMG_3644.jpg",
-  "Photos/IMG_3679.JPG",
-  "Photos/IMG_3692.jpg",
-  "Photos/IMG_3747.JPG",
-  "Photos/IMG_3834.jpg",
-  "Photos/IMG_3837.jpg",
-  "Photos/IMG_3880.jpg",
-  "Photos/IMG_3918.jpg",
-  "Photos/IMG_3987.jpg",
-  "Photos/IMG_3999.jpg",
-  "Photos/IMG_4022.jpg"
+  "Photos/IMG_3692.jpg"
 ];
 
-
 const book = document.getElementById('book');
+const endMessage = document.getElementById('endMessage');
+const skipBtn = document.getElementById('skipToEndBtn');
+const backBtn = document.getElementById('backToStartBtn');
 
-// Each page has: front = photos[i*2], back = photos[i*2+1]
-// Flipping reveals the back photo, no repeats.
 const pageCount = Math.ceil(photos.length / 2);
 
 for (let i = 0; i < pageCount; i++) {
@@ -201,7 +282,7 @@ for (let i = 0; i < pageCount; i++) {
   const page = document.createElement('div');
   page.className = 'page';
 
-  // --- FRONT ---
+  // FRONT
   const front = document.createElement('div');
   front.className = 'page-content front';
 
@@ -210,7 +291,7 @@ for (let i = 0; i < pageCount; i++) {
     wrapper.className = 'intro-wrapper';
     const text = document.createElement('div');
     text.className = 'intro-text';
-    text.innerText = 'The beginning of no end 💛';
+    text.innerText = 'The beginning of No End 💛';
     const img = document.createElement('img');
     img.src = frontPhoto;
     img.className = 'intro-image';
@@ -228,7 +309,7 @@ for (let i = 0; i < pageCount; i++) {
   pn.textContent = i * 2 + 1;
   front.appendChild(pn);
 
-  // --- BACK ---
+  // BACK
   const back = document.createElement('div');
   back.className = 'page-content back';
 
@@ -236,7 +317,6 @@ for (let i = 0; i < pageCount; i++) {
     const backImg = document.createElement('img');
     backImg.src = backPhoto;
     back.appendChild(backImg);
-
     const pn2 = document.createElement('div');
     pn2.className = 'page-num';
     pn2.textContent = i * 2 + 2;
@@ -252,6 +332,7 @@ const pages = document.querySelectorAll('.page');
 let currentPage = 0;
 const totalPages = pages.length;
 pages.forEach((page, index) => page.style.zIndex = totalPages - index);
+
 pages.forEach((page, index) => {
   page.addEventListener('click', () => {
     if (index === currentPage) {
@@ -259,13 +340,47 @@ pages.forEach((page, index) => {
       page.style.transform = 'rotateY(-180deg)';
       setTimeout(() => page.style.zIndex = index, 1000);
       currentPage++;
+      if (currentPage === totalPages) {
+        skipBtn.classList.add('hidden');
+        setTimeout(() => endMessage.classList.add('visible'), 800);
+      }
     } else if (index === currentPage - 1) {
       page.style.zIndex = totalPages + 1;
       page.style.transform = 'rotateY(0deg)';
       setTimeout(() => page.style.zIndex = totalPages - index, 1000);
       currentPage--;
+      endMessage.classList.remove('visible');
+      if (currentPage === 0) skipBtn.classList.remove('hidden');
     }
   });
+});
+
+skipBtn.addEventListener('click', () => {
+  pages.forEach((page, index) => {
+    page.style.transition = 'none';
+    page.style.transform = 'rotateY(-180deg)';
+    page.style.zIndex = index;
+  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    pages.forEach(page => page.style.transition = 'transform 1s ease');
+  }));
+  currentPage = totalPages;
+  skipBtn.classList.add('hidden');
+  setTimeout(() => endMessage.classList.add('visible'), 100);
+});
+
+backBtn.addEventListener('click', () => {
+  endMessage.classList.remove('visible');
+  pages.forEach((page, index) => {
+    page.style.transition = 'none';
+    page.style.transform = 'rotateY(0deg)';
+    page.style.zIndex = totalPages - index;
+  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    pages.forEach(page => page.style.transition = 'transform 1s ease');
+  }));
+  currentPage = 0;
+  skipBtn.classList.remove('hidden');
 });
 </script>
 </body>

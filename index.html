@@ -7,11 +7,10 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap');
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    margin: 0;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -23,7 +22,6 @@
   }
 
   .hint {
-    font-family: 'Lato', sans-serif;
     font-weight: 300;
     font-size: 12px;
     color: rgba(255,255,255,0.75);
@@ -35,8 +33,8 @@
 
   .book-wrapper {
     position: relative;
-    width: var(--book-w);
-    height: var(--book-h);
+    width: var(--bw);
+    height: var(--bh);
   }
 
   .cover {
@@ -49,7 +47,7 @@
 
   .page-stack {
     position: absolute; right: -8px; top: 10px; width: 8px;
-    height: calc(var(--book-h) - 20px);
+    height: calc(var(--bh) - 20px);
     background: linear-gradient(to right, #eaeaea, #cfcfcf);
     border-radius: 3px;
     box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
@@ -57,8 +55,8 @@
   }
 
   .book {
-    width: calc(var(--book-w) - 40px);
-    height: calc(var(--book-h) - 50px);
+    width: calc(var(--bw) - 40px);
+    height: calc(var(--bh) - 50px);
     position: absolute;
     top: 25px; left: 20px;
     perspective: 2500px;
@@ -112,7 +110,7 @@
   .intro-text {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: clamp(15px, 3.5vw, 20px);
+    font-size: clamp(13px, 3vw, 20px);
     margin-bottom: 10px;
     color: #444;
   }
@@ -131,42 +129,10 @@
     bottom: 8px; right: 14px;
     font-size: 11px;
     color: rgba(0,0,0,0.25);
-    font-family: 'Lato', sans-serif;
     font-weight: 300;
     letter-spacing: 0.08em;
   }
 
-  /* Arrow buttons */
-  .arrow-btns {
-    display: flex;
-    gap: 16px;
-    margin-top: 16px;
-  }
-
-  .arrow-btn {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white;
-    font-size: 20px;
-    width: 48px; height: 48px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s ease;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .arrow-btn:hover, .arrow-btn:active {
-    background: rgba(255,255,255,0.35);
-  }
-
-  .arrow-btn:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-
-  /* End message */
   .end-message {
     position: absolute;
     width: 100%; height: 100%;
@@ -182,22 +148,18 @@
     padding: 30px;
   }
 
-  .end-message.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  .end-message.visible { opacity: 1; pointer-events: auto; }
 
   .end-message-title {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: clamp(20px, 5vw, 28px);
+    font-size: clamp(18px, 5vw, 28px);
     color: white;
     margin-bottom: 16px;
     line-height: 1.3;
   }
 
   .end-message-sub {
-    font-family: 'Lato', sans-serif;
     font-weight: 300;
     font-size: 13px;
     color: rgba(255,255,255,0.7);
@@ -206,8 +168,30 @@
     margin-bottom: 6px;
   }
 
+  .arrow-btns {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .arrow-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    font-size: 22px;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .arrow-btn:hover, .arrow-btn:active { background: rgba(255,255,255,0.35); }
+  .arrow-btn:disabled { opacity: 0.3; cursor: default; }
+
   .nav-btn {
-    font-family: 'Lato', sans-serif;
     font-weight: 300;
     font-size: 12px;
     color: rgba(255,255,255,0.85);
@@ -221,22 +205,18 @@
     transition: background 0.3s ease;
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
+    font-family: 'Lato', sans-serif;
   }
 
-  .nav-btn:hover, .nav-btn:active {
-    background: rgba(255,255,255,0.25);
-  }
-
-  .nav-btn.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
+  .nav-btn:hover, .nav-btn:active { background: rgba(255,255,255,0.25); }
+  .nav-btn.hidden { opacity: 0; pointer-events: none; }
 
   #skipToEndBtn { margin-top: 14px; }
   #backToStartBtn { margin-top: 24px; }
 </style>
 </head>
 <body>
+
 <div class="hint">Tap arrows or swipe to turn pages</div>
 <div class="book-wrapper">
   <div class="cover"></div>
@@ -249,7 +229,6 @@
     <button class="nav-btn" id="backToStartBtn">↩ Back to start</button>
   </div>
 </div>
-
 <div class="arrow-btns">
   <button class="arrow-btn" id="prevBtn" disabled>‹</button>
   <button class="arrow-btn" id="nextBtn">›</button>
@@ -257,19 +236,23 @@
 <button class="nav-btn" id="skipToEndBtn">Skip to end ↪</button>
 
 <script>
-  // Responsive sizing
-  function setBookSize() {
-    const maxW = Math.min(window.innerWidth - 32, 440);
-    const maxH = Math.min(window.innerHeight - 180, 600);
-    const ratio = 440 / 600;
-    let w = maxW;
-    let h = w / ratio;
-    if (h > maxH) { h = maxH; w = h * ratio; }
-    document.documentElement.style.setProperty('--book-w', w + 'px');
-    document.documentElement.style.setProperty('--book-h', h + 'px');
+// Responsive: scale book to fit screen with padding for buttons below
+function resize() {
+  const padV = 160; // space for hint + arrows + skip btn
+  const padH = 32;
+  const maxW = 440, maxH = 600;
+  const ratio = maxW / maxH;
+  let w = Math.min(window.innerWidth - padH, maxW);
+  let h = w / ratio;
+  if (h > window.innerHeight - padV) {
+    h = window.innerHeight - padV;
+    w = h * ratio;
   }
-  setBookSize();
-  window.addEventListener('resize', setBookSize);
+  document.documentElement.style.setProperty('--bw', w + 'px');
+  document.documentElement.style.setProperty('--bh', h + 'px');
+}
+resize();
+window.addEventListener('resize', resize);
 
 const photos = [
   "Photos/photo1.JPG",
@@ -320,12 +303,12 @@ const photos = [
   "Photos/IMG_3692.jpg"
 ];
 
-const book = document.getElementById('book');
+const book       = document.getElementById('book');
 const endMessage = document.getElementById('endMessage');
-const skipBtn = document.getElementById('skipToEndBtn');
-const backBtn = document.getElementById('backToStartBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
+const skipBtn    = document.getElementById('skipToEndBtn');
+const backBtn    = document.getElementById('backToStartBtn');
+const prevBtn    = document.getElementById('prevBtn');
+const nextBtn    = document.getElementById('nextBtn');
 
 const pageCount = Math.ceil(photos.length / 2);
 
@@ -384,7 +367,7 @@ let currentPage = 0;
 const totalPages = pages.length;
 let animating = false;
 
-pages.forEach((page, index) => page.style.zIndex = totalPages - index);
+pages.forEach((page, i) => page.style.zIndex = totalPages - i);
 
 function updateButtons() {
   prevBtn.disabled = currentPage === 0;
@@ -420,11 +403,9 @@ function flipBackward() {
   if (currentPage === 0) skipBtn.classList.remove('hidden');
 }
 
-// Arrow buttons
 nextBtn.addEventListener('click', flipForward);
 prevBtn.addEventListener('click', flipBackward);
 
-// Click on book pages (desktop)
 pages.forEach((page, index) => {
   page.addEventListener('click', () => {
     if (index === currentPage) flipForward();
@@ -432,29 +413,19 @@ pages.forEach((page, index) => {
   });
 });
 
-// Swipe support
+// Swipe
 let touchStartX = 0;
-let touchStartY = 0;
-book.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-}, { passive: true });
-
+book.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
 book.addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-    if (dx < 0) flipForward();
-    else flipBackward();
-  }
+  if (Math.abs(dx) > 40) { if (dx < 0) flipForward(); else flipBackward(); }
 }, { passive: true });
 
-// Skip to end
 skipBtn.addEventListener('click', () => {
-  pages.forEach((page, index) => {
+  pages.forEach((page, i) => {
     page.style.transition = 'none';
     page.style.transform = 'rotateY(-180deg)';
-    page.style.zIndex = index;
+    page.style.zIndex = i;
   });
   requestAnimationFrame(() => requestAnimationFrame(() => {
     pages.forEach(page => page.style.transition = 'transform 1s ease');
@@ -465,13 +436,12 @@ skipBtn.addEventListener('click', () => {
   setTimeout(() => endMessage.classList.add('visible'), 100);
 });
 
-// Back to start
 backBtn.addEventListener('click', () => {
   endMessage.classList.remove('visible');
-  pages.forEach((page, index) => {
+  pages.forEach((page, i) => {
     page.style.transition = 'none';
     page.style.transform = 'rotateY(0deg)';
-    page.style.zIndex = totalPages - index;
+    page.style.zIndex = totalPages - i;
   });
   requestAnimationFrame(() => requestAnimationFrame(() => {
     pages.forEach(page => page.style.transition = 'transform 1s ease');

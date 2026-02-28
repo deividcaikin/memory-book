@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Dynamic Memory Book</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap');
 
+  * { box-sizing: border-box; }
+
   body {
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -17,23 +19,24 @@
     background: linear-gradient(135deg, #d4c4f7, #a0c4ff);
     font-family: 'Lato', sans-serif;
     overflow: hidden;
+    touch-action: none;
   }
 
   .hint {
     font-family: 'Lato', sans-serif;
     font-weight: 300;
-    font-size: 13px;
+    font-size: 12px;
     color: rgba(255,255,255,0.75);
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     user-select: none;
   }
 
   .book-wrapper {
     position: relative;
-    width: 440px;
-    height: 600px;
+    width: var(--book-w);
+    height: var(--book-h);
   }
 
   .cover {
@@ -45,7 +48,8 @@
   }
 
   .page-stack {
-    position: absolute; right: -8px; top: 10px; width: 8px; height: 580px;
+    position: absolute; right: -8px; top: 10px; width: 8px;
+    height: calc(var(--book-h) - 20px);
     background: linear-gradient(to right, #eaeaea, #cfcfcf);
     border-radius: 3px;
     box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
@@ -53,8 +57,10 @@
   }
 
   .book {
-    width: 400px; height: 550px;
-    position: absolute; top: 25px; left: 20px;
+    width: calc(var(--book-w) - 40px);
+    height: calc(var(--book-h) - 50px);
+    position: absolute;
+    top: 25px; left: 20px;
     perspective: 2500px;
   }
 
@@ -94,6 +100,7 @@
     max-width: 100%; max-height: 100%;
     object-fit: contain;
     border-radius: 6px;
+    pointer-events: none;
   }
 
   .intro-wrapper {
@@ -105,7 +112,7 @@
   .intro-text {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 20px;
+    font-size: clamp(15px, 3.5vw, 20px);
     margin-bottom: 10px;
     color: #444;
   }
@@ -116,6 +123,7 @@
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     margin-top: 10px;
+    pointer-events: none;
   }
 
   .page-num {
@@ -128,6 +136,37 @@
     letter-spacing: 0.08em;
   }
 
+  /* Arrow buttons */
+  .arrow-btns {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .arrow-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    font-size: 20px;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .arrow-btn:hover, .arrow-btn:active {
+    background: rgba(255,255,255,0.35);
+  }
+
+  .arrow-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  /* End message */
   .end-message {
     position: absolute;
     width: 100%; height: 100%;
@@ -141,7 +180,6 @@
     pointer-events: none;
     text-align: center;
     padding: 30px;
-    box-sizing: border-box;
   }
 
   .end-message.visible {
@@ -152,7 +190,7 @@
   .end-message-title {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 28px;
+    font-size: clamp(20px, 5vw, 28px);
     color: white;
     margin-bottom: 16px;
     line-height: 1.3;
@@ -161,7 +199,7 @@
   .end-message-sub {
     font-family: 'Lato', sans-serif;
     font-weight: 300;
-    font-size: 14px;
+    font-size: 13px;
     color: rgba(255,255,255,0.7);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -172,7 +210,7 @@
     font-family: 'Lato', sans-serif;
     font-weight: 300;
     font-size: 12px;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.85);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     background: rgba(255,255,255,0.12);
@@ -182,11 +220,11 @@
     cursor: pointer;
     transition: background 0.3s ease;
     white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .nav-btn:hover {
+  .nav-btn:hover, .nav-btn:active {
     background: rgba(255,255,255,0.25);
-    color: white;
   }
 
   .nav-btn.hidden {
@@ -194,17 +232,12 @@
     pointer-events: none;
   }
 
-  #skipToEndBtn {
-    margin-top: 18px;
-  }
-
-  #backToStartBtn {
-    margin-top: 24px;
-  }
+  #skipToEndBtn { margin-top: 14px; }
+  #backToStartBtn { margin-top: 24px; }
 </style>
 </head>
 <body>
-<div class="hint">Click pages to turn ↩</div>
+<div class="hint">Tap arrows or swipe to turn pages</div>
 <div class="book-wrapper">
   <div class="cover"></div>
   <div class="page-stack"></div>
@@ -216,9 +249,28 @@
     <button class="nav-btn" id="backToStartBtn">↩ Back to start</button>
   </div>
 </div>
+
+<div class="arrow-btns">
+  <button class="arrow-btn" id="prevBtn" disabled>‹</button>
+  <button class="arrow-btn" id="nextBtn">›</button>
+</div>
 <button class="nav-btn" id="skipToEndBtn">Skip to end ↪</button>
 
 <script>
+  // Responsive sizing
+  function setBookSize() {
+    const maxW = Math.min(window.innerWidth - 32, 440);
+    const maxH = Math.min(window.innerHeight - 180, 600);
+    const ratio = 440 / 600;
+    let w = maxW;
+    let h = w / ratio;
+    if (h > maxH) { h = maxH; w = h * ratio; }
+    document.documentElement.style.setProperty('--book-w', w + 'px');
+    document.documentElement.style.setProperty('--book-h', h + 'px');
+  }
+  setBookSize();
+  window.addEventListener('resize', setBookSize);
+
 const photos = [
   "Photos/photo1.JPG",
   "Photos/IMG_3400.JPG",
@@ -272,6 +324,8 @@ const book = document.getElementById('book');
 const endMessage = document.getElementById('endMessage');
 const skipBtn = document.getElementById('skipToEndBtn');
 const backBtn = document.getElementById('backToStartBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
 
 const pageCount = Math.ceil(photos.length / 2);
 
@@ -282,7 +336,6 @@ for (let i = 0; i < pageCount; i++) {
   const page = document.createElement('div');
   page.className = 'page';
 
-  // FRONT
   const front = document.createElement('div');
   front.className = 'page-content front';
 
@@ -309,10 +362,8 @@ for (let i = 0; i < pageCount; i++) {
   pn.textContent = i * 2 + 1;
   front.appendChild(pn);
 
-  // BACK
   const back = document.createElement('div');
   back.className = 'page-content back';
-
   if (backPhoto) {
     const backImg = document.createElement('img');
     backImg.src = backPhoto;
@@ -331,30 +382,74 @@ for (let i = 0; i < pageCount; i++) {
 const pages = document.querySelectorAll('.page');
 let currentPage = 0;
 const totalPages = pages.length;
+let animating = false;
+
 pages.forEach((page, index) => page.style.zIndex = totalPages - index);
 
+function updateButtons() {
+  prevBtn.disabled = currentPage === 0;
+  nextBtn.disabled = currentPage === totalPages;
+}
+updateButtons();
+
+function flipForward() {
+  if (animating || currentPage >= totalPages) return;
+  animating = true;
+  const page = pages[currentPage];
+  page.style.zIndex = totalPages + 1;
+  page.style.transform = 'rotateY(-180deg)';
+  setTimeout(() => { page.style.zIndex = currentPage; animating = false; }, 1000);
+  currentPage++;
+  updateButtons();
+  if (currentPage === totalPages) {
+    skipBtn.classList.add('hidden');
+    setTimeout(() => endMessage.classList.add('visible'), 800);
+  }
+}
+
+function flipBackward() {
+  if (animating || currentPage === 0) return;
+  animating = true;
+  endMessage.classList.remove('visible');
+  const page = pages[currentPage - 1];
+  page.style.zIndex = totalPages + 1;
+  page.style.transform = 'rotateY(0deg)';
+  setTimeout(() => { page.style.zIndex = totalPages - (currentPage - 1); animating = false; }, 1000);
+  currentPage--;
+  updateButtons();
+  if (currentPage === 0) skipBtn.classList.remove('hidden');
+}
+
+// Arrow buttons
+nextBtn.addEventListener('click', flipForward);
+prevBtn.addEventListener('click', flipBackward);
+
+// Click on book pages (desktop)
 pages.forEach((page, index) => {
   page.addEventListener('click', () => {
-    if (index === currentPage) {
-      page.style.zIndex = totalPages + 1;
-      page.style.transform = 'rotateY(-180deg)';
-      setTimeout(() => page.style.zIndex = index, 1000);
-      currentPage++;
-      if (currentPage === totalPages) {
-        skipBtn.classList.add('hidden');
-        setTimeout(() => endMessage.classList.add('visible'), 800);
-      }
-    } else if (index === currentPage - 1) {
-      page.style.zIndex = totalPages + 1;
-      page.style.transform = 'rotateY(0deg)';
-      setTimeout(() => page.style.zIndex = totalPages - index, 1000);
-      currentPage--;
-      endMessage.classList.remove('visible');
-      if (currentPage === 0) skipBtn.classList.remove('hidden');
-    }
+    if (index === currentPage) flipForward();
+    else if (index === currentPage - 1) flipBackward();
   });
 });
 
+// Swipe support
+let touchStartX = 0;
+let touchStartY = 0;
+book.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+book.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    if (dx < 0) flipForward();
+    else flipBackward();
+  }
+}, { passive: true });
+
+// Skip to end
 skipBtn.addEventListener('click', () => {
   pages.forEach((page, index) => {
     page.style.transition = 'none';
@@ -366,9 +461,11 @@ skipBtn.addEventListener('click', () => {
   }));
   currentPage = totalPages;
   skipBtn.classList.add('hidden');
+  updateButtons();
   setTimeout(() => endMessage.classList.add('visible'), 100);
 });
 
+// Back to start
 backBtn.addEventListener('click', () => {
   endMessage.classList.remove('visible');
   pages.forEach((page, index) => {
@@ -381,6 +478,7 @@ backBtn.addEventListener('click', () => {
   }));
   currentPage = 0;
   skipBtn.classList.remove('hidden');
+  updateButtons();
 });
 </script>
 </body>
